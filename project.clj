@@ -1,6 +1,6 @@
-(defproject lein-redline-rpm "0.1.0-SNAPSHOT"
+(defproject lein-redline-rpm "0.1.0"
   :description "Create an RPM without rpm-tools"
-  :url "http://example.com/FIXME"
+  :url "https://github.com/pausebreak/lein-redline-rpm"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.redline-rpm/redline "1.2.1"]]
