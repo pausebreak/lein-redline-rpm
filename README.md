@@ -5,7 +5,7 @@ Currently this is rather incomplete but there is enough to make a simple rpm.
 
 ## Usage
 
-Add `lein-redline-rpm "0.1.0"` to `:plugins` in your `project.clj` as well as
+Add `lein-redline-rpm "0.2.0"` to `:plugins` in your `project.clj` as well as
 configure `:rpm`
 
 ```
