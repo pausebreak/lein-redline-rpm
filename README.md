@@ -22,7 +22,8 @@ configure `:rpm`
         :post-uninstall-script "script/rpm/post-uninstall"
         :prefixes ["/relocatable/paths"]
         :directories [["/this/directory/will/be/created" 0750 "user" "group"]]
-        :files [["target/your.jar" "/opt/business/your.jar" 0640 0750 "user" "group"]]}
+        :files [["target/your.jar" "/opt/business/your.jar" 0640 0750 "user" "group"]]
+        :symlinks [["/source" "/target"]]}
 ```
 
 `:directories` is for creating a bare directory not doing file traversal
@@ -39,9 +40,13 @@ Name the rpm based on the project with a configure and/or command line override.
 
 Input validation. Redline does very little input validation and rarely throws.
 
-Add Symlinks and all the other stuff not exposed yet.
+Add all the other stuff in Redline not exposed yet.
 
 Add directory traversal file addition ( the thing you thought .addDirectory() did ).
+
+Tests? We could use the redline Scanner to validate various `:rpm` configurations.
+
+Figure out what to do with redline's desire for slf4j. Currently ignoring.
 
 ## License
 

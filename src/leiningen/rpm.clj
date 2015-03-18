@@ -10,30 +10,43 @@
 (def hostname (.. java.net.InetAddress getLocalHost getHostName))
 (def username (System/getProperty "user.name"))
 
-(defn rpm-path
+(defn- rpm-path
   [spec]
   (str "target/rpm" (:version spec) ".rpm"))
 
-(defn add-directories
+(defn- create-directories
   [builder dirs]
-  (info "add-directories")
-  (dorun (map
-    (fn [d]
-      (info "->" d)
-      (let [[path mode user group] d
-            directive (Directive.)]
-        (.addDirectory builder path mode directive user group)))
-    dirs)))
+  (when (seq dirs)
+    (info "create-directories")
+    (dorun (map
+      (fn [d]
+        (info "->" d)
+        (let [[path mode user group] d
+              directive (Directive.)]
+          (.addDirectory builder path mode directive user group)))
+      dirs))))
 
-(defn add-files
+(defn- add-files
   [builder files]
-  (info "add-files")
-  (dorun (map
-    (fn [f]
-      (info "->" f)
-      (let [[path goes-to mode dir-mode user group] f]
-        (.addFile builder goes-to (file path) mode dir-mode user group)))
-    files)))
+  (when (seq files)
+    (info "add-files")
+    (dorun (map
+      (fn [f]
+        (info "->" f)
+        (let [[path goes-to mode dir-mode user group] f]
+          (.addFile builder goes-to (file path) mode dir-mode user group)))
+      files))))
+
+(defn- add-symlinks
+  [builder links]
+  (when (seq links)
+    (info "add-symlinks")
+    (dorun (map
+      (fn [l]
+        (info "->" l)
+        (let [[source target] l]
+          (.addLink builder target source))) ; yep the params are backwards from ln
+      links))))
 
 (defn rpm
   "Java based RPM generator"
@@ -64,6 +77,7 @@
       (.setPostUninstallScript post-uninstall-script)
       (.setPrefixes (into-array (:prefixes rpm)))
       (add-files (:files rpm))
-      (add-directories (:directories rpm))
+      (create-directories (:directories rpm))
+      (add-symlinks (:symlinks rpm))
       (.build file-channel))
     (info "Built: " filepath)))
