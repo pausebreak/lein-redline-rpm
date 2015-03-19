@@ -21,6 +21,7 @@ configure `:rpm`
         :pre-uninstall-script "script/rpm/pre-uninstall"
         :post-uninstall-script "script/rpm/post-uninstall"
         :prefixes ["/relocatable/paths"]
+        :requires [["nginx" ">=" "1.6.2"]]
         :directories [["/this/directory/will/be/created" 0750 "user" "group"]]
         :files [["target/your.jar" "/opt/business/your.jar" 0640 0750 "user" "group"]]
         :symlinks [["/source" "/target"]]}
