@@ -1,4 +1,4 @@
-(defproject lein-redline-rpm "0.2.0"
+(defproject lein-redline-rpm "0.3.0"
   :description "Create an RPM without rpm-tools"
   :url "https://github.com/pausebreak/lein-redline-rpm"
   :license {:name "Eclipse Public License"

@@ -1,7 +1,6 @@
 # lein-redline-rpm
-A pure java RPM Leiningen plugin
 
-Currently this is rather incomplete but there is enough to make a simple rpm.
+A pure java RPM Leiningen plugin
 
 ## Usage
 
@@ -32,7 +31,6 @@ configure `:rpm`
       :directories [["/this/directory/will/be/created" 0750 "user" "group"]]
 ```
 
-
 To create the rpm:
 
 ```
@@ -45,7 +43,7 @@ Name the rpm based on the project with a configure and/or command line override.
 
 Input validation. Redline does very little input validation and rarely throws.
 
-Add all the other stuff in Redline not exposed yet.
+Add private-key stuff
 
 Add directory traversal file addition ( the thing you thought .addDirectory() did ).
 
