@@ -57,6 +57,14 @@
       (info "->" name flag version)
       (.addDependency builder name (flag->int flag) version))))
 
+(defn- add-conflicts
+  [builder c]
+  (when (seq c)
+    (info "add-conflicts")
+    (doseq [[name flag version] c]
+      (info "->" name flag version)
+      (.addConflicts builder name (flag->int flag) version))))
+
 (defn rpm
   "Java based RPM generator"
   [{:keys [license description url version root rpm] :as project} & args]
@@ -77,15 +85,18 @@
       (.setPackage (:package-name rpm) version (:release rpm))
       (.setPackager (:packager rpm))
       (.setPlatform (Architecture/valueOf "X86_64") (Os/valueOf "LINUX"))
-      (.setSummary (:summary rpm));
+      (.setSummary (:summary rpm))
       (.setType (RpmType/valueOf "BINARY"))
       (.setUrl url) (.setVendor (:vendor rpm))
       (.setPreInstallScript pre-install-script)
       (.setPostInstallScript post-install-script)
       (.setPreUninstallScript pre-uninstall-script)
       (.setPostUninstallScript post-uninstall-script)
-      (.setPrefixes (into-array (:prefixes rpm)))
+      (.setPrefixes (into-array (:prefixes rpm [""])))
+      (.setProvides (:provides rpm))
+      (.setSourceRpm (:source-rpm rpm))
       (add-requires (:requires rpm))
+      (add-conflicts (:conflicts rpm))
       (add-files (:files rpm))
       (create-directories (:directories rpm))
       (add-symlinks (:symlinks rpm))

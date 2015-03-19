@@ -9,25 +9,29 @@ Add `lein-redline-rpm "0.2.0"` to `:plugins` in your `project.clj` as well as
 configure `:rpm`
 
 ```
-  :rpm {:package-name "The name the rpm system uses"
-        :distribution "The textual human name for this rpm"
-        :summary "Whatever you want"
-        :vendor "The name of the person or organization responsible"
-        :packager "The name and possibly email address of the person who built this"
-        :group "Application/System"
-        :release "1"
-        :pre-install-script "script/rpm/pre-install"
-        :post-install-script "script/rpm/post-install"
-        :pre-uninstall-script "script/rpm/pre-uninstall"
-        :post-uninstall-script "script/rpm/post-uninstall"
-        :prefixes ["/relocatable/paths"]
-        :requires [["nginx" ">=" "1.6.2"]]
-        :directories [["/this/directory/will/be/created" 0750 "user" "group"]]
-        :files [["target/your.jar" "/opt/business/your.jar" 0640 0750 "user" "group"]]
-        :symlinks [["/source" "/target"]]}
+:rpm {:package-name "The name the rpm system uses"
+      :distribution "The textual human name for this rpm"
+      :summary "Whatever you want"
+      :vendor "The name of the person or organization responsible"
+      :packager "The name and possibly email address of the person who built this"
+      :group "Application/System"
+      :release "1"
+      :pre-install-script "script/rpm/pre-install"
+      :post-install-script "script/rpm/post-install"
+      :pre-uninstall-script "script/rpm/pre-uninstall"
+      :post-uninstall-script "script/rpm/post-uninstall"
+      :prefixes ["/relocatable/paths"]
+      :source-rpm "the-src.rpm"
+      :conflicts [["httpd" ">=" "3.3"]]
+      :provides ["webserver"]
+      :requires [["nginx" ">=" "1.6.2"]]
+      :files [["target/your.jar" "/opt/business/your.jar" 0640 0750 "user" "group"]]
+      :symlinks [["/source" "/target"]]}
+
+      ;; creates an empty directory
+      :directories [["/this/directory/will/be/created" 0750 "user" "group"]]
 ```
 
-`:directories` is for creating a bare directory not doing file traversal
 
 To create the rpm:
 
