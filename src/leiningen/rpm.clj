@@ -3,7 +3,7 @@
     [clojure.java.io :refer [file]]
     [leiningen.core.main :refer [info debug warn]])
   (:import (org.redline_rpm Builder)
-           (org.redline_rpm.header Architecture RpmType Os)
+           (org.redline_rpm.header Header Flags Architecture RpmType Os)
            (org.redline_rpm.payload Directive)
            (java.io RandomAccessFile)))
 
@@ -18,35 +18,44 @@
   [builder dirs]
   (when (seq dirs)
     (info "create-directories")
-    (dorun (map
-      (fn [d]
-        (info "->" d)
-        (let [[path mode user group] d
-              directive (Directive.)]
-          (.addDirectory builder path mode directive user group)))
-      dirs))))
+    (doseq [[path mode user group] dirs]
+      (info "->" path mode user group)
+      (.addDirectory builder path mode (Directive.) user group))))
 
 (defn- add-files
   [builder files]
   (when (seq files)
     (info "add-files")
-    (dorun (map
-      (fn [f]
-        (info "->" f)
-        (let [[path goes-to mode dir-mode user group] f]
-          (.addFile builder goes-to (file path) mode dir-mode user group)))
-      files))))
+    (doseq [[path goes-to mode dir-mode user group] files]
+      (info "->" path goes-to mode dir-mode user group)
+      (.addFile builder goes-to (file path) mode dir-mode user group))))
 
 (defn- add-symlinks
   [builder links]
   (when (seq links)
     (info "add-symlinks")
-    (dorun (map
-      (fn [l]
-        (info "->" l)
-        (let [[source target] l]
-          (.addLink builder target source))) ; yep the params are backwards from ln
-      links))))
+    (doseq [[source target] links]
+      (info "->" source target)
+      (.addLink builder target source)))) ; yep the params are backwards from ln
+
+(defn flag->int
+  [f]
+  (let [flags {">=" (bit-or Flags/GREATER Flags/EQUAL)
+               "<=" (bit-or Flags/LESS Flags/EQUAL)
+               "="  Flags/EQUAL
+               ">>" Flags/GREATER
+               "<<" Flags/LESS}]
+    (if (contains? flags f)
+      (int (get flags f))
+      (throw (Exception. (str f " is not a valid flag"))))))
+
+(defn- add-requires
+  [builder requires]
+  (when (seq requires)
+    (info "add-requires")
+    (doseq [[name flag version] requires]
+      (info "->" name flag version)
+      (.addDependency builder name (flag->int flag) version))))
 
 (defn rpm
   "Java based RPM generator"
@@ -76,6 +85,7 @@
       (.setPreUninstallScript pre-uninstall-script)
       (.setPostUninstallScript post-uninstall-script)
       (.setPrefixes (into-array (:prefixes rpm)))
+      (add-requires (:requires rpm))
       (add-files (:files rpm))
       (create-directories (:directories rpm))
       (add-symlinks (:symlinks rpm))
