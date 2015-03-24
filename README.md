@@ -39,8 +39,6 @@ lein rpm
 
 ## Needs Done
 
-Name the rpm based on the project with a configure and/or command line override.
-
 Input validation. Redline does very little input validation and rarely throws.
 
 Add private-key stuff
