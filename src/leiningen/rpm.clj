@@ -11,8 +11,8 @@
 (def username (System/getProperty "user.name"))
 
 (defn- rpm-path
-  [spec]
-  (str "target/rpm" (:version spec) ".rpm"))
+  [project]
+  (str "target/" (:name project) "-" (:version project) ".rpm"))
 
 (defn- create-directories
   [builder dirs]
@@ -68,7 +68,7 @@
 (defn rpm
   "Java based RPM generator"
   [{:keys [license description url version root rpm] :as project} & args]
-  (let [filepath (rpm-path (cons project rpm))
+  (let [filepath (rpm-path project)
         f (file filepath)
         file-channel (.getChannel (RandomAccessFile. f "rw"))
         pre-install-script (file (:pre-install-script rpm))
