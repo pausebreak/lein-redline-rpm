@@ -30,6 +30,23 @@
       (info "->" path goes-to mode dir-mode user group)
       (.addFile builder goes-to (file path) mode dir-mode user group))))
 
+(defn- destination<-
+  [prefix root path]
+  (str prefix (subs path (.length root))))
+
+(defn- recurse-directories
+  [builder dirs]
+  (when (seq dirs)
+    (info "add-directories")
+    (doseq [[root prefix mode dir-mode user group] dirs]
+      (info "->" root mode user group)
+      (doseq [path (map #(.getPath %) (-> root file file-seq))
+              :let [goes-to (destination<- prefix root path)]
+              :when (-> path file .isDirectory not)]
+        (do
+           (info "->" path goes-to mode dir-mode user group)
+           (.addFile builder goes-to (file path) mode dir-mode user group))))))
+
 (defn- add-symlinks
   [builder links]
   (when (seq links)
@@ -99,6 +116,7 @@
       (add-conflicts (:conflicts rpm))
       (add-files (:files rpm))
       (create-directories (:directories rpm))
+      (recurse-directories (:recurse rpm))
       (add-symlinks (:symlinks rpm))
       (.build file-channel))
     (info "Built: " filepath)))

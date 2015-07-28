@@ -4,7 +4,7 @@ A pure java RPM Leiningen plugin
 
 ## Usage
 
-Add `lein-redline-rpm "0.3.1"` to `:plugins` in your `project.clj` as well as
+Add `lein-redline-rpm "0.4.0"` to `:plugins` in your `project.clj` as well as
 configure `:rpm`
 
 ```
@@ -25,9 +25,10 @@ configure `:rpm`
       :provides ["webserver"]
       :requires [["nginx" ">=" "1.6.2"]]
       :files [["target/your.jar" "/opt/business/your.jar" 0640 0750 "user" "group"]]
+      :recurse [["target/dir" "/opt/business/your/prefix" 0640 0750 "user" "group"]]
       :symlinks [["/source" "/target"]]}
 
-      ;; creates an empty directory
+      ;; creates empty directories
       :directories [["/this/directory/will/be/created" 0750 "user" "group"]]
 ```
 
@@ -42,8 +43,6 @@ lein rpm
 Input validation. Redline does very little input validation and rarely throws.
 
 Add private-key stuff
-
-Add directory traversal file addition ( the thing you thought .addDirectory() did ).
 
 Tests? We could use the redline Scanner to validate various `:rpm` configurations.
 
