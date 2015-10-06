@@ -4,7 +4,7 @@ A pure java RPM Leiningen plugin
 
 ## Usage
 
-Add `lein-redline-rpm "0.4.0"` to `:plugins` in your `project.clj` as well as
+Add `lein-redline-rpm "0.4.1"` to `:plugins` in your `project.clj` as well as
 configure `:rpm`
 
 ```
@@ -14,6 +14,7 @@ configure `:rpm`
       :vendor "The name of the person or organization responsible"
       :packager "The name and possibly email address of the person who built this"
       :group "Application/System"
+      :version 0.4.4   ;; if this is not set then the project :version is used
       :release "1"
       :pre-install-script "script/rpm/pre-install"
       :post-install-script "script/rpm/post-install"
