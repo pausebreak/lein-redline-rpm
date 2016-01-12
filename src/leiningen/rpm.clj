@@ -82,6 +82,14 @@
       (info "->" name flag version)
       (.addConflicts builder name (flag->int flag) version))))
 
+(defn- add-built-in-directories
+  [builder dirs]
+  (when (seq dirs)
+    (info "add-built-in-directories")
+    (doseq [dir dirs]
+      (info "->" dir)
+      (.addBuiltinDirectory builder dir))))
+
 (defn rpm
   "Java based RPM generator"
   [{:keys [license description url version root rpm] :as project} & args]
@@ -95,6 +103,7 @@
         post-uninstall-script (file (:post-uninstall-script rpm))
         builder (Builder.)]
     (doto builder
+      (add-built-in-directories (:built-in-directories rpm))
       (.setBuildHost hostname)
       (.setDescription description)
       (.setDistribution (:distribution rpm))

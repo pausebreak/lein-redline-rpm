@@ -25,6 +25,7 @@ configure `:rpm`
       :conflicts [["httpd" ">=" "3.3"]]
       :provides ["webserver"]
       :requires [["nginx" ">=" "1.6.2"]]
+      :built-in-directories ["/opt/" "/usr/lib"]
       :files [["target/your.jar" "/opt/business/your.jar" 0640 0750 "user" "group"]]
       :recurse [["target/dir" "/opt/business/your/prefix" 0640 0750 "user" "group"]]
       :symlinks [["/source" "/target"]]}
@@ -38,6 +39,12 @@ To create the rpm:
 ```
 lein rpm
 ```
+
+## Things to Know
+
+`:built-in-directories` is a optional vector of strings (paths) that will not be not be mananged by your RPM.
+By default the parent directories of each file are added to your RPM unless they are in this vector or part of
+the ["BUILTIN"](https://github.com/craigwblake/redline/blob/master/src/main/java/org/redline_rpm/payload/Contents.java#L49).
 
 ## Needs Done
 
