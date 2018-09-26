@@ -1,6 +1,7 @@
 (ns leiningen.rpm
   (:require
-    [clojure.java.io :refer [file]]
+   [clojure.java.io :refer [file]]
+   [clojure.string :as string]
     [leiningen.core.main :refer [info debug warn]])
   (:import (org.redline_rpm Builder)
            (org.redline_rpm.header Header Flags Architecture RpmType Os)
@@ -90,10 +91,19 @@
       (info "->" dir)
       (.addBuiltinDirectory builder dir))))
 
+(defn- fix-package-version
+  "Dashes are not allowed in RPM package version strings; that collides with
+  Leiningen's `-SNAPSHOT` package versions.  To make building SNAPSHOT RPMs
+  work, rewrite that portion of the package version."
+  [package-version]
+  (string/replace package-version
+                  "-SNAPSHOT"
+                  (str "SNAPSHOT" (.format (java.text.SimpleDateFormat. "yyyymmddHHMMSS") (new java.util.Date)))))
+
 (defn rpm
   "Java based RPM generator"
   [{:keys [license description url version root rpm] :as project} & args]
-  (let [package-version (:version rpm version)
+  (let [package-version (fix-package-version (:version rpm version))
         filepath (rpm-path (:package-name rpm) package-version)
         f (file filepath)
         file-channel (.getChannel (RandomAccessFile. f "rw"))
